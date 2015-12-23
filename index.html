@@ -12,29 +12,108 @@
   <body>
     <section class="page-header">
       <h1 class="project-name">sandwich.limo</h1>
-      <h2 class="project-tagline">My (delicious) cloud playground</h2>
-      <img src="http://i.imgur.com/fYt6pIb.jpg" />
+      <h2 class="project-tagline">My (delicious) PaaS playground</h2>
+      <a href="https://github.com/arcdigital/sandwich.limo" class="btn">View on GitHub</a>
+      <a href="https://github.com/arcdigital/sandwich.limo/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/arcdigital/sandwich.limo/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
     <section class="main-content">
       <h1>
 <a id="what-is-sandwichlimo" class="anchor" href="#what-is-sandwichlimo" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is sandwich.limo</h1>
 
-<p>sandwich.limo is <a href="http://anand.io">my</a> (delicious) cloud playground. I'm very fascinated with containerization, virtualization, twelve-factor, THE CLOUD, etc... and I experiment with various technologies here. You can see what I'm currently playing with below.</p>
+<p>sandwich.limo is <a href="http://anand.io">my</a> (delicious) PaaS playground. I'm very fascinated with containerization, virtualization, twelve-factor, THE CLOUD, etc... and I experiment with various technologies here. You can see what I'm currently playing with below.
+<img src="http://i.imgur.com/fYt6pIb.jpg" alt="Picture of a sandwich on wheels"></p>
 
 <h2>
 <a id="project-hoagie" class="anchor" href="#project-hoagie" aria-hidden="true"><span class="octicon octicon-link"></span></a>Project Hoagie</h2>
 
 <h3>
-<a id="infrastructure" class="anchor" href="#infrastructure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
 
-<p>Project Hoagie is a PaaS experiment. It uses HPE Helion Stackato. The platform is hosted on AWS in a VPC. Total cost is ~$550/mo.</p>
+<p>Project Hoagie is a PaaS experiment. It uses HPE Helion Stackato. The platform packages applications and executes them in docker containers.</p>
+
+<h3>
+<a id="status" class="anchor" href="#status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Status</h3>
+
+<p>It works! I'm still playing around with the infrastructure though. I'm working on creating a CloudFormation template, so I can easily deploy a cluster of servers.</p>
+
+<h3>
+<a id="scalingavailability" class="anchor" href="#scalingavailability" aria-hidden="true"><span class="octicon octicon-link"></span></a>Scaling/Availability</h3>
+
+<p>The DEAs can easily be scaled up/down via auto-scaling. The Helion Stackato engine restarts the droplets on other DEAs if a failure occurs.</p>
+
+<h3>
+<a id="architectureelements" class="anchor" href="#architectureelements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Architecture/Elements</h3>
+
+<p>The Helion Stackato platform is made up of a number of nodes which play various roles.</p>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>primary</td>
+<td>Runs the cloud controller, health manager, and a router.</td>
+</tr>
+<tr>
+<td>controller</td>
+<td>Manages most of the operations. Runs the management console, API, cloud controller, handles service provisioning, dispatches application staging/deployment, and tracks availability of DEA nodes (via health manager).</td>
+</tr>
+<tr>
+<td>router</td>
+<td>Routes traffic to the appropriate destination (usually an application running on a DEA).</td>
+</tr>
+<tr>
+<td>dea</td>
+<td>DEA stands for Droplet Execution Agent. It handles executing the various applications via docker containers.</td>
+</tr>
+<tr>
+<td>filesystem</td>
+<td>Provides a persistent filesystem service to the platform.</td>
+</tr>
+<tr>
+<td>mongodb</td>
+<td>Self-explanatory</td>
+</tr>
+<tr>
+<td>mysql</td>
+<td>Self-explanatory</td>
+</tr>
+<tr>
+<td>postgresql</td>
+<td>Self-explanatory</td>
+</tr>
+<tr>
+<td>rabbit</td>
+<td>Runs a RabbitMQ service</td>
+</tr>
+<tr>
+<td>redis</td>
+<td>Self-explanatory</td>
+</tr>
+<tr>
+<td>memcached</td>
+<td>Self-explanatory</td>
+</tr>
+<tr>
+<td>harbor</td>
+<td>Provides routing for ports (other than HTTP/HTTPS via 80/443 - that is handled by the router)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="infrastructure---vpc-1000016" class="anchor" href="#infrastructure---vpc-1000016" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infrastructure - VPC (10.0.0.0/16)</h3>
+
+<p>I'm hosting the platform on AWS in a VPC. Total cost is ~$550/mo.</p>
 
 <h4>
-<a id="vpc-1000016" class="anchor" href="#vpc-1000016" aria-hidden="true"><span class="octicon octicon-link"></span></a>VPC (10.0.0.0/16)</h4>
-
-<h5>
-<a id="subnets" class="anchor" href="#subnets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Subnets</h5>
+<a id="subnets" class="anchor" href="#subnets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Subnets</h4>
 
 <table>
 <thead>
@@ -58,8 +137,8 @@
 </tbody>
 </table>
 
-<h5>
-<a id="instances" class="anchor" href="#instances" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instances</h5>
+<h4>
+<a id="instances" class="anchor" href="#instances" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instances</h4>
 
 <table>
 <thead>
